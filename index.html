@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRAKEN AI - EXPLOIT HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); } }
+        .error-glow { animation: pulse-red 2s infinite; }
+        .game-btn { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .game-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .game-btn:hover::before { opacity: 1; }
+        .game-btn.active { border-color: white; box-shadow: 0 0 15px rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .game-btn img { transition: transform 0.3s ease; }
+        .game-btn:hover img { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-black text-zinc-300 min-h-screen flex flex-col items-center p-4">
+
+    <!-- VIEW 1: LANDING PAGE -->
+    <div id="view-landing" class="flex-1 w-full max-w-xl flex flex-col items-center justify-center animate-fade-in">
+        <div class="text-center mb-10">
+            <!-- ВЕКТОРНЫЙ ЛОГОТИП (Вместо картинки) -->
+            <svg class="w-28 h-28 mx-auto mb-4 fill-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M40 20 L50 35 L40 50 L55 50 L65 30 L55 20 Z" />
+                <path d="M60 40 L65 50 L55 60 L65 60 L75 45 L65 35 Z" />
+                <path d="M70 55 L75 65 L65 75 L75 75 L85 60 L75 50 Z" />
+            </svg>
+            <h1 class="text-5xl font-black text-white tracking-tighter mb-2" style="font-family: sans-serif;">KRAKEN <span class="text-blue-500">AI</span></h1>
+            <p class="text-sm text-zinc-500 uppercase tracking-widest">نظام التوقع والاختراق v2.4</p>
+        </div>
+
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-8 shadow-2xl w-full text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600"></div>
+            <h2 class="text-2xl font-black text-white mb-4 tracking-wide">اختراق الخوارزميات</h2>
+            <p class="text-sm text-zinc-400 mb-8 leading-relaxed">
+                تقوم شبكة KRAKEN العصبية بتحليل خوادم RNG في الوقت الفعلي وتقدم توقعات بدقة تصل إلى <span class="text-green-400 font-bold">96.4%</span>. أكمل الإعداد وابدأ في كسب المال.
+            </p>
+            <button type="button" id="btn-start" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-lg font-bold text-lg tracking-wider transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center justify-center gap-2 group">
+                احسب أرباحك
+                <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- VIEW 2: QUIZ -->
+    <div id="view-quiz" class="hidden flex-1 w-full max-w-xl flex-col items-center justify-center animate-fade-in">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-8 shadow-2xl w-full text-center relative">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-xs text-zinc-500" id="quiz-step-counter">الخطوة 1 من 2</span>
+                <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+            </div>
+            <div id="quiz-container" class="w-full">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: MAIN DASHBOARD -->
+    <div id="view-main" class="hidden w-full max-w-xl flex-col items-center pt-8 pb-20 animate-fade-in">
+        
+        <!-- Header -->
+        <div class="w-full flex items-center justify-between mb-6 pb-4 border-b border-zinc-800">
+            <div class="flex items-center gap-3">
+                <!-- ВЕКТОРНЫЙ ЛОГОТИП (Вместо картинки) -->
+                <svg class="w-10 h-10 fill-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40 20 L50 35 L40 50 L55 50 L65 30 L55 20 Z" />
+                    <path d="M60 40 L65 50 L55 60 L65 60 L75 45 L65 35 Z" />
+                    <path d="M70 55 L75 65 L65 75 L75 75 L85 60 L75 50 Z" />
+                </svg>
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs font-bold text-green-500" style="font-family: sans-serif;">SYSTEM ONLINE</span>
+                    </div>
+                    <p class="text-[10px] text-zinc-500" style="font-family: sans-serif;">SESSION: 0x8F2A...B19</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Goal Display -->
+        <div class="w-full bg-blue-900/20 border border-blue-900/50 rounded-lg p-4 mb-8 text-center">
+            <p class="text-xs text-blue-400 mb-1 tracking-widest">الخطة الشخصية</p>
+            <p id="target-info" class="text-sm font-bold text-white">الهدف: ... | المدة: ...</p>
+        </div>
+
+        <!-- Game Selection -->
+        <h3 class="text-xs text-zinc-500 uppercase tracking-wider w-full mb-3 text-right">اختر الخوارزمية (الخطوة 3):</h3>
+        <div class="grid grid-cols-3 gap-3 w-full mb-8">
+            <button type="button" data-game="MINES" class="game-btn bg-zinc-900 border border-zinc-700 rounded-xl p-2 flex flex-col items-center justify-center gap-2">
+                <div class="w-16 h-16 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-1 relative">
+                     <span class="absolute text-2xl">💣</span>
+                     <img src="mines-logo.png" alt="Mines" class="w-full h-full object-cover relative z-10" onerror="this.style.display='none'">
+                </div>
+                <span class="font-bold text-xs text-white" style="font-family: sans-serif;">MINES</span>
+            </button>
+            <button type="button" data-game="AVIATOR" class="game-btn bg-zinc-900 border border-zinc-700 rounded-xl p-2 flex flex-col items-center justify-center gap-2">
+                <div class="w-16 h-16 rounded-lg overflow-hidden bg-white flex items-center justify-center mb-1 p-1 relative">
+                     <span class="absolute text-2xl">✈️</span>
+                     <img src="aviator-logo-png_seeklogo-618852.png" alt="Aviator" class="w-full h-auto object-contain relative z-10" onerror="this.style.display='none'">
+                </div>
+                <span class="font-bold text-xs text-white" style="font-family: sans-serif;">AVIATOR</span>
+            </button>
+            <button type="button" data-game="APPLE" class="game-btn bg-zinc-900 border border-zinc-700 rounded-xl p-2 flex flex-col items-center justify-center gap-2">
+                <div class="w-16 h-16 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-1 relative">
+                     <span class="absolute text-2xl">🍏</span>
+                     <img src="unnamed.jpg" alt="Apple" class="w-full h-full object-cover relative z-10" onerror="this.style.display='none'">
+                </div>
+                <span class="font-bold text-[10px] text-center leading-tight text-white" style="font-family: sans-serif;">APPLE OF<br>FORTUNE</span>
+            </button>
+        </div>
+
+        <button type="button" id="btn-get-signal" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-lg font-bold text-sm tracking-wider transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed" disabled>
+            <svg id="icon-spin" class="w-5 h-5 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span id="text-btn-signal">احصل على التوقع</span>
+        </button>
+    </div>
+
+    <!-- MODAL ERROR (Всплывающая ошибка) -->
+    <div id="modal-error" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 animate-fade-in z-[60]">
+        <div class="bg-zinc-950 border border-red-900/30 rounded-2xl p-8 w-full max-w-sm shadow-2xl relative flex flex-col items-center text-center">
+            <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 error-glow">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-xl font-black text-white mb-2">لم يتم العثور على اللاعب</h3>
+            <p class="text-xs text-zinc-400 mb-8 leading-relaxed">
+                الشبكة العصبية غير قادرة على الاتصال بحسابك. <br><br>
+                <span class="text-white">نحن نعمل فقط مع حسابات 1XBET الجديدة لتجاوز نظام مكافحة الاحتيال في الكازينو.</span>
+            </p>
+            <button type="button" id="btn-show-register" class="bg-white text-black hover:bg-zinc-200 py-4 px-6 rounded-lg font-bold text-sm transition-colors w-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                إنشاء حساب جديد
+            </button>
+            <button type="button" id="btn-close-error" class="absolute top-4 left-4 text-zinc-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTER -->
+    <div id="modal-register" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 animate-fade-in">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+            
+            <!-- ШАГ 1: ВВОД ID -->
+            <div id="reg-step-1">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-white">التحقق</h3>
+                    <p class="text-xs text-zinc-500 mt-1">مطلوب حساب 1XBET جديد</p>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4 text-xs text-zinc-400 leading-relaxed text-right">
+                        <p class="mb-2">1. قم بتسجيل حساب <span class="text-white font-bold">جديد</span> من خلال الزر أدناه.</p>
+                        <p class="mb-2">2. أدخل الرمز الترويجي <span class="text-blue-400 font-bold text-sm bg-blue-900/30 px-1 rounded" style="font-family: sans-serif;">KRAKEN888</span> عند التسجيل.</p>
+                        <p>3. انسخ المعرف الخاص بك المكون من 10 أرقام والصقه هنا.</p>
+                    </div>
+                    
+                    <a href="https://reffpa.com/L?tag=d_5547148m_69917c_&site=5547148&ad=69917&r=registration" target="_blank" rel="noreferrer" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                        الذهاب للتسجيل
+                        <svg class="w-4 h-4 transform scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </div>
+
+                <div class="border-t border-zinc-800 pt-5 mt-2">
+                    <p class="text-[10px] text-zinc-500 uppercase mb-2 text-right">هل سجلت بالفعل؟</p>
+                    <input type="text" id="input-id" maxlength="10" placeholder="أدخل المعرف المكون من 10 أرقام" class="w-full bg-black border border-zinc-800 text-white rounded-lg p-3 outline-none focus:border-blue-500 transition-colors text-center mb-3" style="font-family: sans-serif;">
+                    <p id="error-msg" class="text-xs text-red-500 text-center hidden mb-3"></p>
+                    <button type="button" id="btn-verify-id" class="w-full bg-white text-black hover:bg-zinc-200 py-3 rounded-lg font-bold text-sm transition-colors shadow-lg">
+                        التحقق من المعرف
+                    </button>
+                </div>
+            </div>
+
+            <!-- ШАГ 2: ЭТАП ДЕПОЗИТА -->
+            <div id="reg-step-2" class="hidden flex-col items-center text-center py-2 animate-fade-in">
+                <div class="w-16 h-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h3 class="text-xl font-black text-white mb-4">تم ربط الحساب</h3>
+                
+                <div class="w-full bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6 text-right">
+                    <div class="flex items-center justify-center gap-2 mb-3 text-yellow-500">
+                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="text-xs font-bold text-center w-full">في انتظار الرصيد</span>
+                    </div>
+                    <p class="text-xs text-zinc-300 leading-relaxed mb-3">
+                        تمت مزامنة خوارزمية KRAKEN بنجاح مع ملف تعريف <span class="font-bold text-white" style="font-family: sans-serif;">1XBET</span> الخاص بك.
+                    </p>
+                    <p class="text-xs text-zinc-400 leading-relaxed mb-3">
+                        لتفعيل ميزة "اختراق التجزئة"، تحتاج الخوارزمية إلى اكتشاف رصيد لعب نشط في حسابك.
+                    </p>
+                    <p class="text-xs text-zinc-300 leading-relaxed bg-black/50 p-3 rounded border border-zinc-800">
+                        <span class="text-yellow-500">الإجراء:</span> قم بتمويل حساب 1XBET الخاص بك بحد أدنى <span class="text-green-400 font-bold bg-green-900/30 px-1 rounded inline-block" dir="ltr">$6 / 700 SYP</span>. بعد الإيداع، التقط لقطة شاشة للرصيد وأرسلها إلى مديرنا.
+                    </p>
+                </div>
+
+                <a href="https://t.me/YOUR_TELEGRAM_USERNAME" target="_blank" rel="noreferrer" class="w-full bg-[#2AABEE] hover:bg-[#229ED9] text-white py-4 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(42,171,238,0.4)]">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.662 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    إرسال لقطة الشاشة
+                </a>
+            </div>
+            
+            <button type="button" id="btn-close-modal" class="absolute top-4 left-4 text-zinc-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "ما هو المبلغ الذي ترغب في كسبه؟", options: ["$500 / 58,000 SYP", "$2000 / 230,000 SYP", "$5000+ / 580,000+ SYP"] },
+            { question: "كم ساعة في اليوم يمكنك تخصيصها للعب؟", options: ["1-3 ساعات", "3-6 ساعات", "6+ ساعات"] }
+        ];
+        let currentStep = 0;
+        let userData = { goal: '', time: '' };
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            const step = quizData[currentStep];
+            document.getElementById('quiz-step-counter').textContent = `الخطوة ${currentStep + 1} من ${quizData.length}`;
+            
+            container.innerHTML = `
+                <h3 class="text-white text-xl font-bold mb-6">${step.question}</h3>
+                <div class="grid gap-3 w-full">
+                    ${step.options.map((opt) => `
+                        <button type="button" onclick="handleQuizAnswer('${opt}')" class="w-full bg-zinc-900 border border-zinc-700 p-4 rounded-lg text-sm font-bold hover:bg-white hover:text-black transition-all" style="font-family: sans-serif;">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.handleQuizAnswer = function(answer) {
+            if(currentStep === 0) userData.goal = answer;
+            else userData.time = answer;
+            
+            currentStep++;
+            if(currentStep < quizData.length) {
+                renderQuiz();
+            } else {
+                const container = document.getElementById('quiz-container');
+                document.getElementById('quiz-step-counter').textContent = "جاري تحليل البيانات...";
+                container.innerHTML = `<div class="py-10 flex flex-col items-center"><svg class="w-10 h-10 animate-spin text-blue-500 mb-4" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><p class="text-xs text-zinc-400">جاري إعداد الخطة...</p></div>`;
+                
+                setTimeout(() => {
+                    let days = "7-14 أيام";
+                    if(userData.time === "6+ ساعات") days = "3-5 أيام";
+                    if(userData.goal.includes("$5000") && userData.time === "1-3 ساعات") days = "30-45 يوماً";
+
+                    document.getElementById('target-info').textContent = `الهدف: ${userData.goal.split(' / ')[0]} | المدة: ~${days}`;
+                    
+                    document.getElementById('view-quiz').classList.add('hidden');
+                    document.getElementById('view-quiz').classList.remove('flex');
+                    document.getElementById('view-main').classList.remove('hidden');
+                    document.getElementById('view-main').classList.add('flex');
+                }, 2000);
+            }
+        }
+
+        document.getElementById('btn-start').addEventListener('click', () => {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-landing').classList.remove('flex');
+            document.getElementById('view-quiz').classList.remove('hidden');
+            document.getElementById('view-quiz').classList.add('flex');
+            renderQuiz();
+        });
+
+        document.querySelectorAll('.game-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.game-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.classList.remove('border-white', 'shadow-[0_0_15px_rgba(255,255,255,0.2)]');
+                });
+                const currentBtn = e.currentTarget;
+                currentBtn.classList.add('active');
+                currentBtn.classList.add('border-white', 'shadow-[0_0_15px_rgba(255,255,255,0.2)]');
+
+                const btnSignal = document.getElementById('btn-get-signal');
+                btnSignal.disabled = false;
+                btnSignal.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+        });
+
+        document.getElementById('btn-get-signal').addEventListener('click', () => {
+            const btnSignal = document.getElementById('btn-get-signal');
+            const textBtn = document.getElementById('text-btn-signal');
+            const iconSpin = document.getElementById('icon-spin');
+            
+            btnSignal.disabled = true;
+            textBtn.textContent = 'جاري المزامنة...';
+            iconSpin.classList.remove('hidden');
+
+            setTimeout(() => {
+                btnSignal.disabled = false;
+                textBtn.textContent = 'احصل على التوقع';
+                iconSpin.classList.add('hidden');
+
+                document.getElementById('modal-error').classList.remove('hidden');
+                document.getElementById('modal-error').classList.add('flex');
+            }, 1500);
+        });
+
+        document.getElementById('btn-show-register').addEventListener('click', () => {
+            document.getElementById('modal-error').classList.add('hidden');
+            document.getElementById('modal-error').classList.remove('flex');
+            
+            document.getElementById('reg-step-1').classList.remove('hidden');
+            document.getElementById('reg-step-2').classList.add('hidden');
+            document.getElementById('reg-step-2').classList.remove('flex');
+            
+            document.getElementById('modal-register').classList.remove('hidden');
+            document.getElementById('modal-register').classList.add('flex');
+        });
+
+        document.getElementById('btn-close-error').addEventListener('click', () => {
+            document.getElementById('modal-error').classList.add('hidden');
+            document.getElementById('modal-error').classList.remove('flex');
+        });
+
+        document.getElementById('btn-close-modal').addEventListener('click', () => {
+            document.getElementById('modal-register').classList.add('hidden');
+            document.getElementById('modal-register').classList.remove('flex');
+        });
+
+        document.getElementById('btn-verify-id').addEventListener('click', () => {
+            const inputEl = document.getElementById('input-id');
+            const val = inputEl.value.trim();
+            const btnVerify = document.getElementById('btn-verify-id');
+            const errorMsg = document.getElementById('error-msg');
+            
+            if(val.length !== 10 || !/^\d+$/.test(val)) {
+                errorMsg.innerHTML = 'خطأ: يجب أن يتكون المعرف من 10 أرقام بالضبط.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            
+            btnVerify.disabled = true;
+            btnVerify.textContent = 'جاري الاتصال بـ API...';
+            errorMsg.classList.add('hidden');
+
+            setTimeout(() => {
+                if (!val.startsWith('171')) {
+                    errorMsg.innerHTML = 'تنبيه: هذا المعرف غير موجود في قاعدة البيانات.<br>تأكد من تسجيل حساب <span class="text-white font-bold">جديد</span> عبر الرابط أعلاه.';
+                    errorMsg.classList.remove('hidden');
+                    btnVerify.disabled = false;
+                    btnVerify.textContent = 'التحقق من المعرف';
+                } else {
+                    document.getElementById('reg-step-1').classList.add('hidden');
+                    document.getElementById('reg-step-2').classList.remove('hidden');
+                    document.getElementById('reg-step-2').classList.add('flex');
+                    
+                    btnVerify.disabled = false;
+                    btnVerify.textContent = 'التحقق من المعرف';
+                    inputEl.value = '';
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

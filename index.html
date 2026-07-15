@@ -23,6 +23,27 @@
         .game-icon-container { transition: transform 0.3s ease; }
         .game-btn:hover .game-icon-container { transform: scale(1.05); }
         .game-btn.active .game-icon-container { transform: scale(1.1); }
+        
+        /* شريط تحميل بسيط */
+        .loading-bar { position: relative; overflow: hidden; }
+        .loading-bar::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
+            animation: loading 1.5s infinite ease-in-out;
+        }
+        @keyframes loading { 100% { left: 200%; } }
+        
+        /* анимации для линии выигрышей */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-slide-up { animation: slideUpFade 0.4s ease-out forwards; }
+        @keyframes fadeOutDown {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+        .animate-fade-out { animation: fadeOutDown 0.4s ease-out forwards; }
     </style>
 </head>
 <body class="bg-[#050505] text-zinc-300 min-h-screen flex flex-col items-center p-4 overflow-x-hidden">
@@ -43,36 +64,33 @@
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600"></div>
             <h2 class="text-2xl font-black text-white mb-4 tracking-wide">اختراق الخوارزميات</h2>
             <p class="text-sm text-zinc-400 mb-8 leading-relaxed">
-                تقوم شبكة KRAKEN العصبية بتحليل خوادم الـ RNG في الوقت الفعلي وتقدم توقعات بدقة تصل إلى <span class="text-green-400 font-bold drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">96.4%</span>. أكمل الإعداد وابدأ في كسب المال.
+                تقوم شبكة KRAKEN العصبية بتحليل خوادم الـ RNG في الوقت الفعلي وتقدم توقعات بدقة تصل إلى <span class="text-green-400 font-bold drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">96.4%</span>.
             </p>
             <button type="button" id="btn-start" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-bold text-lg tracking-wider transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 group">
-                احسب أرباحك
+                تفعيل النظام وبدء العمل
                 <svg class="w-5 h-5 group-hover:-translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </button>
         </div>
     </div>
 
-    <!-- VIEW 2: QUIZ -->
-    <div id="view-quiz" class="hidden flex-1 w-full max-w-xl flex-col items-center justify-center animate-fade-in">
-        <div class="bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-2xl p-8 shadow-2xl w-full text-center relative">
-            <div class="flex justify-between items-center mb-8 bg-black/40 p-3 rounded-lg border border-zinc-800/50">
-                <span class="text-sm font-bold text-zinc-400" id="quiz-step-counter">الخطوة 1 من 2</span>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-blue-400">تحليل</span>
-                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-                </div>
+    <!-- VIEW 2: LOADING TRANSITION -->
+    <div id="view-loader" class="hidden flex-1 w-full max-w-xl flex-col items-center justify-center animate-fade-in">
+        <div class="text-center">
+            <div class="w-20 h-20 bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                <svg class="w-10 h-10 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <div class="absolute inset-0 border-t-2 border-blue-500 rounded-full animate-[spin_2s_linear_infinite]"></div>
             </div>
-            <div id="quiz-container" class="w-full">
-                <!-- Content injected via JS -->
-            </div>
+            <h3 class="text-xl font-black text-white mb-2">جاري الاتصال بخوادم الكازينو</h3>
+            <p class="text-sm text-zinc-500 mb-6">يتم الآن تهيئة الشبكة العصبية وإنشاء جلسة آمنة...</p>
+            <div class="w-48 h-1.5 bg-zinc-800 rounded-full mx-auto overflow-hidden loading-bar"></div>
         </div>
     </div>
 
     <!-- VIEW 3: MAIN DASHBOARD -->
-    <div id="view-main" class="hidden w-full max-w-xl flex-col items-center pt-6 pb-20 animate-fade-in">
+    <div id="view-main" class="hidden flex-1 w-full max-w-xl flex-col items-center pt-6 pb-20 animate-fade-in">
         
         <!-- Header -->
-        <div class="w-full flex items-center justify-between mb-6 pb-4 border-b border-zinc-800">
+        <div class="w-full flex items-center justify-between mb-8 pb-4 border-b border-zinc-800">
             <div class="flex items-center gap-3">
                 <svg class="w-10 h-10 fill-white drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <path d="M40 20 L50 35 L40 50 L55 50 L65 30 L55 20 Z" />
@@ -81,25 +99,17 @@
                 </svg>
                 <div>
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-xs font-black text-green-500 tracking-wider" style="font-family: sans-serif;">SYSTEM ONLINE</span>
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+                        <span class="text-xs font-black text-green-500 tracking-wider" style="font-family: sans-serif;">SYSTEM SECURE</span>
                     </div>
                     <p class="text-[10px] font-bold text-zinc-500 tracking-widest" style="font-family: sans-serif;">SESSION: 0x8F2A...B19</p>
                 </div>
             </div>
         </div>
 
-        <!-- Personal Goal Display -->
-        <div class="w-full bg-gradient-to-r from-blue-900/10 via-blue-900/20 to-blue-900/10 border border-blue-900/50 rounded-xl p-5 mb-8 text-center relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl"></div>
-            <p class="text-xs text-blue-400 mb-2 tracking-widest font-bold">الخطة الشخصية المحسوبة</p>
-            <p id="target-info" class="text-sm font-black text-white">الهدف: ... | المدة: ...</p>
-        </div>
-
         <!-- Game Selection -->
         <div class="w-full flex items-center justify-between mb-4">
             <h3 class="text-sm font-bold text-zinc-300">اختر الخوارزمية المستهدفة:</h3>
-            <span class="bg-zinc-800 text-xs px-2 py-1 rounded text-zinc-400">الخطوة 3</span>
         </div>
 
         <div class="grid grid-cols-3 gap-3 w-full mb-8">
@@ -107,7 +117,6 @@
             <button type="button" data-game="MINES" class="game-btn bg-[#0a0a0c] border border-zinc-800 rounded-2xl p-3 flex flex-col items-center justify-center gap-3">
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-900 to-black border border-indigo-500/30 flex items-center justify-center game-icon-container relative shadow-inner">
                      <span class="text-3xl relative z-10 drop-shadow-lg">💣</span>
-                     <!-- Grid background effect -->
                      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDBMMTkgMjBMMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=')] opacity-50 z-0"></div>
                 </div>
                 <span class="font-black text-xs text-white tracking-wider" style="font-family: sans-serif;">MINES</span>
@@ -117,7 +126,6 @@
             <button type="button" data-game="AVIATOR" class="game-btn bg-[#0a0a0c] border border-zinc-800 rounded-2xl p-3 flex flex-col items-center justify-center gap-3">
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gradient-to-br from-red-900/80 to-black border border-red-500/30 flex items-center justify-center game-icon-container relative shadow-inner">
                      <span class="text-3xl relative z-10 drop-shadow-lg">✈️</span>
-                     <!-- Graph line effect -->
                      <svg class="absolute bottom-0 left-0 w-full h-full opacity-40 z-0" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 L20 80 L40 85 L100 20 L100 100 Z" fill="rgba(239, 68, 68, 0.2)" stroke="rgba(239, 68, 68, 0.5)" stroke-width="2"/></svg>
                 </div>
                 <span class="font-black text-xs text-white tracking-wider" style="font-family: sans-serif;">AVIATOR</span>
@@ -139,19 +147,19 @@
         </button>
     </div>
 
-    <!-- MODAL ERROR (Всплывающая ошибка) -->
+    <!-- MODAL ERROR -->
     <div id="modal-error" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex-col items-center justify-center p-4 animate-fade-in z-[60]">
-        <div class="bg-zinc-950 border border-red-900/50 rounded-3xl p-8 w-full max-w-sm shadow-[0_0_50px_rgba(220,38,38,0.15)] relative flex flex-col items-center text-center">
-            <div class="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 error-glow">
-                <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 w-full max-w-sm shadow-2xl relative flex flex-col items-center text-center">
+            <div class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-5">
+                <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
-            <h3 class="text-2xl font-black text-white mb-3">حساب غير مدعوم</h3>
-            <p class="text-sm text-zinc-400 mb-8 leading-relaxed">
-                الشبكة العصبية غير قادرة على الاتصال بحسابك واختراقه.<br><br>
-                <span class="text-white font-bold bg-zinc-900 px-3 py-2 rounded-lg block border border-zinc-800 mt-2">نظام KRAKEN يعمل <span class="text-blue-400">فقط</span> مع حسابات 1XBET الجديدة المجهزة لتجاوز مكافحة الاحتيال.</span>
+            <h3 class="text-xl font-black text-white mb-2">لم يتم العثور على حسابك</h3>
+            <p class="text-sm text-zinc-400 mb-6 leading-relaxed">
+                عذراً، لا يمكن ربط الخوارزمية بحسابك الحالي.<br>
+                يجب إنشاء <span class="text-white font-bold">حساب جديد</span> لضمان نجاح الاختراق.
             </p>
-            <button type="button" id="btn-show-register" class="bg-white text-black hover:bg-zinc-200 py-4 px-6 rounded-xl font-bold text-base transition-colors w-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                تجهيز حساب جديد
+            <button type="button" id="btn-show-register" class="bg-white text-black hover:bg-zinc-200 py-3.5 px-6 rounded-xl font-bold text-base transition-colors w-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                إنشاء حساب جديد
             </button>
             <button type="button" id="btn-close-error" class="absolute top-5 left-5 text-zinc-600 hover:text-white transition-colors bg-zinc-900 p-2 rounded-full">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -163,68 +171,41 @@
     <div id="modal-register" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex-col items-center justify-center p-4 animate-fade-in">
         <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
             
-            <!-- ШАГ 1: ВВОД ID -->
-            <div id="reg-step-1">
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-3">
-                        <svg class="w-8 h-8 -rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-white">ربط حساب جديد</h3>
-                    <p class="text-sm text-zinc-500 mt-2">اتبع التعليمات لتجاوز حماية الكازينو</p>
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                 </div>
-
-                <div class="space-y-4 mb-6">
-                    <div class="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 text-sm text-zinc-300 leading-relaxed text-right space-y-3">
-                        <p class="flex items-start gap-2"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 mt-0.5">1</span> قم بتسجيل حساب <span class="text-white font-bold border-b border-blue-500 pb-0.5">جديد</span> من خلال الزر أدناه.</p>
-                        <p class="flex items-start gap-2"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 mt-0.5">2</span> أدخل الرمز الترويجي <span class="text-blue-400 font-bold bg-blue-900/30 px-2 py-0.5 rounded border border-blue-500/30" style="font-family: sans-serif;">KRAKEN888</span> عند التسجيل.</p>
-                        <p class="flex items-start gap-2"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 mt-0.5">3</span> انسخ المعرف (ID) المكون من 10 أرقام والصقه هنا.</p>
-                    </div>
-                    
-                    <a href="https://reffpa.com/L?tag=d_5547148m_69917c_&site=5547148&ad=69917&r=registration" target="_blank" rel="noreferrer" class="w-full bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 text-white py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] relative overflow-hidden">
-                        <span class="relative z-10">الذهاب للتسجيل في 1XBET</span>
-                        <svg class="w-5 h-5 transform scale-x-[-1] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        <div class="absolute inset-0 bg-white/20 translate-y-full hover:translate-y-0 transition-transform duration-300"></div>
-                    </a>
-                </div>
-
-                <div class="border-t border-zinc-800 pt-6 mt-4 relative">
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-zinc-950 px-4 text-xs text-zinc-500 uppercase tracking-widest font-bold">الخطوة الأخيرة</span>
-                    <input type="text" id="input-id" maxlength="10" placeholder="أدخل المعرف المكون من 10 أرقام هنا" class="w-full bg-black border-2 border-zinc-800 text-white rounded-xl p-4 outline-none focus:border-blue-500 transition-colors text-center font-bold tracking-widest mb-4" style="font-family: sans-serif;">
-                    <p id="error-msg" class="text-sm font-bold text-red-500 text-center hidden mb-4 bg-red-950/30 p-3 rounded-lg border border-red-900/50"></p>
-                    <button type="button" id="btn-verify-id" class="w-full bg-white text-black hover:bg-zinc-200 py-4 rounded-xl font-black text-base transition-colors shadow-lg">
-                        التحقق من المعرف للربط
-                    </button>
-                </div>
+                <h3 class="text-2xl font-black text-white">تفعيل حساب جديد</h3>
+                <p class="text-sm text-zinc-500 mt-1">خطوات بسيطة لربط الشبكة العصبية</p>
             </div>
 
-            <!-- ШАГ 2: ЭТАП ДЕПОЗИТА -->
-            <div id="reg-step-2" class="hidden flex-col items-center text-center py-4 animate-fade-in">
-                <div class="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            <div class="space-y-4 mb-6">
+                <!-- Instructions -->
+                <div class="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-4 text-sm text-zinc-300 leading-relaxed text-right space-y-3">
+                    <p class="flex items-center gap-3">
+                        <span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 font-bold">1</span> 
+                        <span>سجل حساب <span class="text-white font-bold">جديد</span> عبر الزر أدناه.</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 font-bold">2</span> 
+                        <span>استخدم الكود الترويجي <span class="text-blue-400 font-bold bg-blue-900/30 px-1.5 py-0.5 rounded border border-blue-500/30" style="font-family: sans-serif;">KRAKEN888</span></span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 font-bold">3</span> 
+                        <span>أرسل لقطة شاشة للمعرف (ID) الخاص بك لتفعيله.</span>
+                    </p>
                 </div>
-                <h3 class="text-2xl font-black text-white mb-6">تم ربط الحساب بنجاح</h3>
                 
-                <div class="w-full bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-5 mb-8 text-right relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-2 h-full bg-yellow-500"></div>
-                    <div class="flex items-center justify-center gap-3 mb-4 text-yellow-500 bg-yellow-950/40 py-2 rounded-lg">
-                        <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        <span class="text-sm font-black text-center">في انتظار رصيد اللعب</span>
-                    </div>
-                    <p class="text-sm text-zinc-300 leading-relaxed mb-4">
-                        تمت مزامنة خوارزمية KRAKEN بنجاح مع ملف تعريف <span class="font-bold text-white bg-black px-1 rounded" style="font-family: sans-serif;">1XBET</span> الخاص بك.
-                    </p>
-                    <p class="text-sm text-zinc-400 leading-relaxed mb-4 border-b border-zinc-800/50 pb-4">
-                        لتفعيل ميزة "اختراق التجزئة" والحصول على التوقعات، تحتاج الخوارزمية إلى اكتشاف رصيد لعب نشط في حسابك.
-                    </p>
-                    <p class="text-sm text-zinc-300 leading-relaxed bg-black/60 p-4 rounded-xl border border-zinc-800">
-                        <span class="text-yellow-500 font-bold block mb-2">الإجراء المطلوب:</span> 
-                        قم بتمويل حسابك بحد أدنى <span class="text-green-400 font-black bg-green-900/30 px-2 py-1 rounded-md inline-block border border-green-500/20" dir="ltr">$6 / 90,000 ل.س</span>. بعد الإيداع، التقط لقطة شاشة للرصيد وأرسلها.
-                    </p>
-                </div>
+                <!-- Registration Button -->
+                <a href="https://reffpa.com/L?tag=d_5547148m_69917c_&site=5547148&ad=69917&r=registration" target="_blank" rel="noreferrer" class="w-full bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] relative overflow-hidden mb-3">
+                    <span class="relative z-10">التسجيل في 1XBET</span>
+                    <svg class="w-5 h-5 transform scale-x-[-1] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
 
-                <a href="https://t.me/YOUR_TELEGRAM_USERNAME" target="_blank" rel="noreferrer" class="w-full bg-[#2AABEE] hover:bg-[#229ED9] text-white py-4 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all shadow-[0_0_20px_rgba(42,171,238,0.4)]">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.662 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                    إرسال لقطة الشاشة للتفعيل
+                <!-- Telegram Button -->
+                <a href="https://telegram.me/AiPredictor2_bot" target="_blank" rel="noreferrer" class="w-full bg-[#2AABEE] hover:bg-[#229ED9] text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(42,171,238,0.4)]">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.662 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    أرسل لقطة الشاشة
                 </a>
             </div>
             
@@ -234,74 +215,30 @@
         </div>
     </div>
 
+    <!-- LIVE WINS FEED (Линия выигрышей) -->
+    <div id="live-feed" class="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto md:w-72 flex flex-col gap-2 z-40 pointer-events-none">
+        <!-- Блоки выигрышей будут добавляться сюда через JS -->
+    </div>
+
     <script>
-        const quizData = [
-            { question: "ما هو المبلغ الذي ترغب في كسبه؟", options: ["$500 / 7,500,000 ل.س", "$2000 / 30,000,000 ل.س", "$5000+ / 75,000,000+ ل.س"] },
-            { question: "كم ساعة في اليوم يمكنك تخصيصها للعب؟", options: ["1-3 ساعات", "3-6 ساعات", "6+ ساعات"] }
-        ];
-        let currentStep = 0;
-        let userData = { goal: '', time: '' };
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            const step = quizData[currentStep];
-            document.getElementById('quiz-step-counter').textContent = `الخطوة ${currentStep + 1} من ${quizData.length}`;
-            
-            container.innerHTML = `
-                <h3 class="text-white text-xl font-bold mb-8">${step.question}</h3>
-                <div class="grid gap-4 w-full">
-                    ${step.options.map((opt) => `
-                        <button type="button" onclick="handleQuizAnswer('${opt}')" class="w-full bg-black border-2 border-zinc-800 p-5 rounded-xl text-base font-bold hover:bg-blue-600 hover:border-blue-500 hover:text-white transition-all transform hover:-translate-y-1 shadow-lg" style="font-family: sans-serif;">
-                            ${opt}
-                        </button>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        window.handleQuizAnswer = function(answer) {
-            if(currentStep === 0) userData.goal = answer;
-            else userData.time = answer;
-            
-            currentStep++;
-            if(currentStep < quizData.length) {
-                renderQuiz();
-            } else {
-                const container = document.getElementById('quiz-container');
-                document.getElementById('quiz-step-counter').textContent = "جاري تحليل البيانات وإعداد الشبكة...";
-                container.innerHTML = `
-                    <div class="py-12 flex flex-col items-center">
-                        <svg class="w-14 h-14 animate-spin text-blue-500 mb-6 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        <p class="text-sm font-bold text-zinc-300 mb-2">جاري مزامنة خطة الأرباح...</p>
-                        <div class="w-48 h-1.5 bg-zinc-800 rounded-full overflow-hidden mt-2">
-                            <div class="h-full bg-blue-500 w-full animate-[progress_2s_ease-in-out]"></div>
-                        </div>
-                    </div>
-                    <style>@keyframes progress { from { width: 0%; } to { width: 100%; } }</style>
-                `;
-                
-                setTimeout(() => {
-                    let days = "7-14 أيام";
-                    if(userData.time === "6+ ساعات") days = "3-5 أيام";
-                    if(userData.goal.includes("$5000") && userData.time === "1-3 ساعات") days = "30-45 يوماً";
-
-                    document.getElementById('target-info').textContent = `الهدف: ${userData.goal.split(' / ')[0]} | المدة المتوقعة: ~${days}`;
-                    
-                    document.getElementById('view-quiz').classList.add('hidden');
-                    document.getElementById('view-quiz').classList.remove('flex');
-                    document.getElementById('view-main').classList.remove('hidden');
-                    document.getElementById('view-main').classList.add('flex');
-                }, 2000);
-            }
-        }
-
-        // Navigation and Button Logic
+        // Navigation Logic (Skip Quiz)
         document.getElementById('btn-start').addEventListener('click', () => {
+            // Hide Landing
             document.getElementById('view-landing').classList.add('hidden');
             document.getElementById('view-landing').classList.remove('flex');
-            document.getElementById('view-quiz').classList.remove('hidden');
-            document.getElementById('view-quiz').classList.add('flex');
-            renderQuiz();
+            
+            // Show Loader
+            document.getElementById('view-loader').classList.remove('hidden');
+            document.getElementById('view-loader').classList.add('flex');
+            
+            // Wait 2 seconds, then show Dashboard
+            setTimeout(() => {
+                document.getElementById('view-loader').classList.add('hidden');
+                document.getElementById('view-loader').classList.remove('flex');
+                
+                document.getElementById('view-main').classList.remove('hidden');
+                document.getElementById('view-main').classList.add('flex');
+            }, 2000);
         });
 
         // Game Selection Logic
@@ -348,10 +285,6 @@
             document.getElementById('modal-error').classList.add('hidden');
             document.getElementById('modal-error').classList.remove('flex');
             
-            document.getElementById('reg-step-1').classList.remove('hidden');
-            document.getElementById('reg-step-2').classList.add('hidden');
-            document.getElementById('reg-step-2').classList.remove('flex');
-            
             document.getElementById('modal-register').classList.remove('hidden');
             document.getElementById('modal-register').classList.add('flex');
         });
@@ -367,41 +300,73 @@
             document.getElementById('modal-register').classList.remove('flex');
         });
 
-        // Verify ID Logic
-        document.getElementById('btn-verify-id').addEventListener('click', () => {
-            const inputEl = document.getElementById('input-id');
-            const val = inputEl.value.trim();
-            const btnVerify = document.getElementById('btn-verify-id');
-            const errorMsg = document.getElementById('error-msg');
-            
-            if(val.length !== 10 || !/^\d+$/.test(val)) {
-                errorMsg.innerHTML = 'خطأ: يجب أن يتكون المعرف من 10 أرقام بالضبط.';
-                errorMsg.classList.remove('hidden');
-                return;
-            }
-            
-            btnVerify.disabled = true;
-            btnVerify.textContent = 'جاري الاتصال بقاعدة بيانات الكازينو...';
-            errorMsg.classList.add('hidden');
+        // LIVE WINS GENERATOR (Лента выигрышей)
+        const fakeGames = [
+            {name: 'MINES', icon: '💣'}, 
+            {name: 'AVIATOR', icon: '✈️'}, 
+            {name: 'APPLE', icon: '🍏'}
+        ];
 
-            setTimeout(() => {
-                // Fake validation logic: ID must start with 173 to pass (hidden trick)
-                if (!val.startsWith('173')) {
-                    errorMsg.innerHTML = 'الشبكة العصبية ترفض الحساب.<br>يجب إنشاء حساب <span class="text-white underline">جديد تماماً</span> باستخدام الرابط بالأعلى.';
-                    errorMsg.classList.remove('hidden');
-                    btnVerify.disabled = false;
-                    btnVerify.textContent = 'التحقق من المعرف للربط';
-                } else {
-                    document.getElementById('reg-step-1').classList.add('hidden');
-                    document.getElementById('reg-step-2').classList.remove('hidden');
-                    document.getElementById('reg-step-2').classList.add('flex');
-                    
-                    btnVerify.disabled = false;
-                    btnVerify.textContent = 'التحقق من المعرف للربط';
-                    inputEl.value = '';
-                }
-            }, 2500);
-        });
+        // Generate a random ID starting with 173 (10 digits total)
+        function generateRandomId() {
+            const endDigits = Math.floor(1000 + Math.random() * 9000); 
+            return `173***${endDigits}`;
+        }
+
+        function showLiveWin() {
+            const game = fakeGames[Math.floor(Math.random() * fakeGames.length)];
+            
+            // Random amount between $10 and $250
+            const usdAmount = Math.floor(Math.random() * 240) + 10;
+            // 1 USD = 122 SYP
+            const sypAmount = usdAmount * 122; 
+            const formattedAmount = '+' + sypAmount.toLocaleString('en-US') + ' ل.س';
+
+            const feedContainer = document.getElementById('live-feed');
+            
+            // Создаем новый блок выигрыша
+            const winItem = document.createElement('div');
+            winItem.className = 'bg-zinc-900/95 backdrop-blur-md border border-zinc-800/80 rounded-xl p-3 shadow-[0_5px_20px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-slide-up transition-all';
+            winItem.innerHTML = `
+                <div class="w-10 h-10 bg-gradient-to-br from-zinc-800 to-black rounded-lg flex items-center justify-center text-xl shadow-inner border border-zinc-700/50">
+                    ${game.icon}
+                </div>
+                <div class="flex-1 flex justify-between items-center">
+                    <div>
+                        <p class="text-[12px] font-bold text-white tracking-widest font-sans" dir="ltr">ID: ${generateRandomId()}</p>
+                        <p class="text-[10px] text-zinc-400 font-sans">${game.name}</p>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm font-black text-green-400 font-sans" dir="ltr">${formattedAmount}</p>
+                    </div>
+                </div>
+            `;
+
+            // Добавляем новый блок наверх линии
+            feedContainer.prepend(winItem);
+
+            // Ограничиваем количество блоков до 3 (история остается на экране)
+            if (feedContainer.children.length > 3) {
+                const oldestItem = feedContainer.lastElementChild;
+                // Анимация затухания для старого блока
+                oldestItem.classList.remove('animate-slide-up');
+                oldestItem.classList.add('animate-fade-out');
+                
+                // Удаляем из DOM после завершения анимации
+                setTimeout(() => {
+                    if(oldestItem.parentNode) {
+                        oldestItem.remove();
+                    }
+                }, 400); 
+            }
+        }
+
+        // Запуск цикла с реалистичными задержками (от 2 до 6 секунд)
+        setTimeout(function winLoop() {
+            showLiveWin();
+            const nextDelay = Math.floor(Math.random() * 4000) + 2000;
+            setTimeout(winLoop, nextDelay);
+        }, 1000);
     </script>
 </body>
 </html>
